@@ -75,7 +75,7 @@
 							"sink": {
 								"type": "CosmosDbMongoDbApiSink",
 								"writeBatchTimeout": "00:30:00",
-								"writeBatchSize": 10,
+								"writeBatchSize": 100,
 								"writeBehavior": "upsert"
 							},
 							"enableStaging": false,
@@ -86,7 +86,7 @@
 									{
 										"source": {
 											"name": "id",
-											"type": "String"
+											"type": "Int32"
 										},
 										"sink": {
 											"path": "$['id']"

@@ -38,10 +38,6 @@
 				"precision": 18,
 				"scale": 6
 			}
-		],
-		"typeProperties": {
-			"schema": "dbo",
-			"table": "DimPlayer"
-		}
+		]
 	}
 }

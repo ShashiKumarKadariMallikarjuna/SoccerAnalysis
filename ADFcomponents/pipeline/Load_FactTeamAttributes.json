@@ -328,7 +328,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "AzureSynapseAnalyticsTable2",
+						"referenceName": "FactTeamAttributes",
 						"type": "DatasetReference"
 					}
 				]

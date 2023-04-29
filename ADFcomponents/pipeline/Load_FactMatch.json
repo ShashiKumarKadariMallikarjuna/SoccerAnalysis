@@ -825,8 +825,8 @@
 							},
 							{
 								"source": {
-									"name": "away_team_goal",
-									"type": "String"
+									"name": "BSD",
+									"type": "Decimal"
 								},
 								"sink": {
 									"name": "BSD",

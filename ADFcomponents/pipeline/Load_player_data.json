@@ -67,7 +67,7 @@
 							{
 								"source": {
 									"name": "birthday",
-									"type": "DateTimeOffset",
+									"type": "String",
 									"format": "yyyy-mm-dd",
 									"culture": "en-US"
 								},

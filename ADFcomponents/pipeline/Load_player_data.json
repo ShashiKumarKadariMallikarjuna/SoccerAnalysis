@@ -50,7 +50,7 @@
 							{
 								"source": {
 									"name": "id",
-									"type": "String"
+									"type": "Int32"
 								},
 								"sink": {
 									"path": "$['id']"

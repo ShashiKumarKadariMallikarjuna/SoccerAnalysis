@@ -75,7 +75,8 @@
 							"sink": {
 								"type": "CosmosDbMongoDbApiSink",
 								"writeBatchTimeout": "00:30:00",
-								"writeBehavior": "insert"
+								"writeBatchSize": 10,
+								"writeBehavior": "upsert"
 							},
 							"enableStaging": false,
 							"validateDataConsistency": false,
@@ -88,7 +89,7 @@
 											"type": "String"
 										},
 										"sink": {
-											"path": "id"
+											"path": "$['id']"
 										}
 									},
 									{
@@ -97,18 +98,18 @@
 											"type": "String"
 										},
 										"sink": {
-											"path": "name"
+											"path": "$['name']"
 										}
 									},
 									{
 										"source": {
 											"name": "birthday",
-											"type": "DateTime",
+											"type": "String",
 											"format": "yyyy-mm-dd",
 											"culture": "en-US"
 										},
 										"sink": {
-											"path": "dob"
+											"path": "$['dob']"
 										}
 									},
 									{
@@ -117,7 +118,7 @@
 											"type": "Double"
 										},
 										"sink": {
-											"path": "height"
+											"path": "$['height']"
 										}
 									},
 									{
@@ -126,7 +127,7 @@
 											"type": "Double"
 										},
 										"sink": {
-											"path": "weight"
+											"path": "$['weight']"
 										}
 									},
 									{

@@ -17,7 +17,7 @@
 				"typeProperties": {
 					"source": {
 						"type": "MySqlSource",
-						"query": "SELECT player_id,\n  DATE_FORMAT(`date`, '%Y%m%d') AS datekey,\n  overall_rating ,\n  potential ,\n  preferred_foot ,\n  attacking_work_rate ,\n  defensive_work_rate ,\n  crossing ,\n  finishing ,\n  heading_accuracy ,\n  short_passing ,\n  volleys ,\n  dribbling ,\n  curve ,\n  free_kick_accuracy ,\n  long_passing ,\n  ball_control ,\n  acceleration ,\n  sprint_speed ,\n  agility ,\n  reactions ,\n  balance ,\n  shot_power ,\n  jumping ,\n  stamina ,\n  strength ,\n  long_shots ,\n  aggression ,\n  interceptions ,\n  positioning ,\n  vision ,\n  penalties ,\n  marking ,\n  standing_tackle ,\n  sliding_tackle ,\n  gk_diving ,\n  gk_handling ,\n  gk_kicking ,\n  gk_positioning ,\n  gk_reflexes ,\n  current_timestamp() as update_time \n FROM socceranalysis.player_attributes;"
+						"query": "SELECT player_id,\n  DATE_FORMAT(`date`, '%Y%m%d') AS datekey,\n  cast(overall_rating  as decimal(18,6)) overall_rating,\n  cast(potential  as decimal(18,6)) potential,\n  preferred_foot ,\n  attacking_work_rate ,\n  defensive_work_rate ,\n  cast(crossing  as decimal(18,6)) crossing,\n  cast(finishing  as decimal(18,6)) finishing,\n  cast(heading_accuracy  as decimal(18,6)) heading_accuracy,\n  cast(short_passing  as decimal(18,6)) short_passing,\n  cast(volleys as decimal(18,6)) volleys,\n  cast(dribbling as decimal(18,6)) dribbling,\n  cast(curve as decimal(18,6)) curve,\n  cast(free_kick_accuracy as decimal(18,6)) free_kick_accuracy,\n  cast(long_passing as decimal(18,6)) long_passing,\n  cast(ball_control as decimal(18,6)) ball_control,\n  cast(acceleration as decimal(18,6)) acceleration,\n  cast(sprint_speed as decimal(18,6)) sprint_speed,\n  cast(agility as decimal(18,6)) agility,\n  cast(reactions as decimal(18,6)) reactions,\n  cast(balance as decimal(18,6)) balance,\n  cast(shot_power  as decimal(18,6)) shot_power,\n  cast(jumping  as decimal(18,6)) jumping ,\n  cast(stamina  as decimal(18,6)) stamina ,\n  cast(strength  as decimal(18,6)) strength,\n  cast(long_shots  as decimal(18,6)) long_shots,\n  cast(aggression  as decimal(18,6)) aggression,\n  cast(interceptions  as decimal(18,6)) interceptions,\n  cast(positioning  as decimal(18,6)) positioning,\n  cast(vision  as decimal(18,6)) vision,\n  cast(penalties  as decimal(18,6)) penalties,\n  cast(marking  as decimal(18,6)) marking,\n  cast(standing_tackle  as decimal(18,6)) standing_tackle,\n  cast(sliding_tackle  as decimal(18,6)) sliding_tackle,\n  cast(gk_diving  as decimal(18,6)) gk_diving,\n  cast(gk_handling  as decimal(18,6)) gk_handling,\n  cast(gk_kicking  as decimal(18,6)) gk_kicking,\n  cast(gk_positioning  as decimal(18,6)) gk_positioning,\n  cast(gk_reflexes  as decimal(18,6)) gk_reflexes,\n  current_timestamp() as update_time \n FROM socceranalysis.player_attributes;"
 					},
 					"sink": {
 						"type": "SqlDWSink",
@@ -55,7 +55,7 @@
 							{
 								"source": {
 									"name": "overall_rating",
-									"type": "String"
+									"type": "Decimal"
 								},
 								"sink": {
 									"name": "overall_rating",
@@ -68,7 +68,7 @@
 							{
 								"source": {
 									"name": "potential",
-									"type": "String"
+									"type": "Decimal"
 								},
 								"sink": {
 									"name": "potential",
@@ -114,7 +114,7 @@
 							{
 								"source": {
 									"name": "crossing",
-									"type": "String"
+									"type": "Decimal"
 								},
 								"sink": {
 									"name": "crossing",
@@ -127,7 +127,7 @@
 							{
 								"source": {
 									"name": "finishing",
-									"type": "String"
+									"type": "Decimal"
 								},
 								"sink": {
 									"name": "finishing",
@@ -140,7 +140,7 @@
 							{
 								"source": {
 									"name": "heading_accuracy",
-									"type": "String"
+									"type": "Decimal"
 								},
 								"sink": {
 									"name": "heading_accuracy",
@@ -153,7 +153,7 @@
 							{
 								"source": {
 									"name": "short_passing",
-									"type": "String"
+									"type": "Decimal"
 								},
 								"sink": {
 									"name": "short_passing",
@@ -166,7 +166,7 @@
 							{
 								"source": {
 									"name": "volleys",
-									"type": "String"
+									"type": "Decimal"
 								},
 								"sink": {
 									"name": "volleys",
@@ -179,7 +179,7 @@
 							{
 								"source": {
 									"name": "dribbling",
-									"type": "String"
+									"type": "Decimal"
 								},
 								"sink": {
 									"name": "dribbling",
@@ -192,7 +192,7 @@
 							{
 								"source": {
 									"name": "curve",
-									"type": "String"
+									"type": "Decimal"
 								},
 								"sink": {
 									"name": "curve",
@@ -205,7 +205,7 @@
 							{
 								"source": {
 									"name": "free_kick_accuracy",
-									"type": "String"
+									"type": "Decimal"
 								},
 								"sink": {
 									"name": "free_kick_accuracy",
@@ -218,7 +218,7 @@
 							{
 								"source": {
 									"name": "long_passing",
-									"type": "String"
+									"type": "Decimal"
 								},
 								"sink": {
 									"name": "long_passing",
@@ -231,7 +231,7 @@
 							{
 								"source": {
 									"name": "ball_control",
-									"type": "String"
+									"type": "Decimal"
 								},
 								"sink": {
 									"name": "ball_control",
@@ -244,7 +244,7 @@
 							{
 								"source": {
 									"name": "acceleration",
-									"type": "String"
+									"type": "Decimal"
 								},
 								"sink": {
 									"name": "acceleration",
@@ -257,7 +257,7 @@
 							{
 								"source": {
 									"name": "sprint_speed",
-									"type": "String"
+									"type": "Decimal"
 								},
 								"sink": {
 									"name": "sprint_speed",
@@ -270,7 +270,7 @@
 							{
 								"source": {
 									"name": "agility",
-									"type": "String"
+									"type": "Decimal"
 								},
 								"sink": {
 									"name": "agility",
@@ -283,7 +283,7 @@
 							{
 								"source": {
 									"name": "reactions",
-									"type": "String"
+									"type": "Decimal"
 								},
 								"sink": {
 									"name": "reactions",
@@ -296,7 +296,7 @@
 							{
 								"source": {
 									"name": "balance",
-									"type": "String"
+									"type": "Decimal"
 								},
 								"sink": {
 									"name": "balance",
@@ -309,7 +309,7 @@
 							{
 								"source": {
 									"name": "shot_power",
-									"type": "String"
+									"type": "Decimal"
 								},
 								"sink": {
 									"name": "shot_power",
@@ -322,7 +322,7 @@
 							{
 								"source": {
 									"name": "jumping",
-									"type": "String"
+									"type": "Decimal"
 								},
 								"sink": {
 									"name": "jumping",
@@ -335,7 +335,7 @@
 							{
 								"source": {
 									"name": "stamina",
-									"type": "String"
+									"type": "Decimal"
 								},
 								"sink": {
 									"name": "stamina",
@@ -348,7 +348,7 @@
 							{
 								"source": {
 									"name": "strength",
-									"type": "String"
+									"type": "Decimal"
 								},
 								"sink": {
 									"name": "strength",
@@ -361,7 +361,7 @@
 							{
 								"source": {
 									"name": "long_shots",
-									"type": "String"
+									"type": "Decimal"
 								},
 								"sink": {
 									"name": "long_shots",
@@ -374,7 +374,7 @@
 							{
 								"source": {
 									"name": "aggression",
-									"type": "String"
+									"type": "Decimal"
 								},
 								"sink": {
 									"name": "aggression",
@@ -387,7 +387,7 @@
 							{
 								"source": {
 									"name": "interceptions",
-									"type": "String"
+									"type": "Decimal"
 								},
 								"sink": {
 									"name": "interceptions",
@@ -400,7 +400,7 @@
 							{
 								"source": {
 									"name": "positioning",
-									"type": "String"
+									"type": "Decimal"
 								},
 								"sink": {
 									"name": "positioning",
@@ -413,7 +413,7 @@
 							{
 								"source": {
 									"name": "vision",
-									"type": "String"
+									"type": "Decimal"
 								},
 								"sink": {
 									"name": "vision",
@@ -426,7 +426,7 @@
 							{
 								"source": {
 									"name": "penalties",
-									"type": "String"
+									"type": "Decimal"
 								},
 								"sink": {
 									"name": "penalties",
@@ -439,7 +439,7 @@
 							{
 								"source": {
 									"name": "marking",
-									"type": "String"
+									"type": "Decimal"
 								},
 								"sink": {
 									"name": "marking",
@@ -452,7 +452,7 @@
 							{
 								"source": {
 									"name": "standing_tackle",
-									"type": "String"
+									"type": "Decimal"
 								},
 								"sink": {
 									"name": "standing_tackle",
@@ -465,7 +465,7 @@
 							{
 								"source": {
 									"name": "sliding_tackle",
-									"type": "String"
+									"type": "Decimal"
 								},
 								"sink": {
 									"name": "sliding_tackle",
@@ -478,7 +478,7 @@
 							{
 								"source": {
 									"name": "gk_diving",
-									"type": "String"
+									"type": "Decimal"
 								},
 								"sink": {
 									"name": "gk_diving",
@@ -491,7 +491,7 @@
 							{
 								"source": {
 									"name": "gk_handling",
-									"type": "String"
+									"type": "Decimal"
 								},
 								"sink": {
 									"name": "gk_handling",
@@ -504,7 +504,7 @@
 							{
 								"source": {
 									"name": "gk_kicking",
-									"type": "String"
+									"type": "Decimal"
 								},
 								"sink": {
 									"name": "gk_kicking",
@@ -517,7 +517,7 @@
 							{
 								"source": {
 									"name": "gk_positioning",
-									"type": "String"
+									"type": "Decimal"
 								},
 								"sink": {
 									"name": "gk_positioning",
@@ -530,7 +530,7 @@
 							{
 								"source": {
 									"name": "gk_reflexes",
-									"type": "String"
+									"type": "Decimal"
 								},
 								"sink": {
 									"name": "gk_reflexes",

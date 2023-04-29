@@ -1,0 +1,578 @@
+{
+	"name": "Load_FactPlayerStats",
+	"properties": {
+		"activities": [
+			{
+				"name": "Load_FactPlayerStats",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 1,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "MySqlSource",
+						"query": "SELECT player_id,\n  DATE_FORMAT(`date`, '%Y%m%d') AS datekey,\n  overall_rating ,\n  potential ,\n  preferred_foot ,\n  attacking_work_rate ,\n  defensive_work_rate ,\n  crossing ,\n  finishing ,\n  heading_accuracy ,\n  short_passing ,\n  volleys ,\n  dribbling ,\n  curve ,\n  free_kick_accuracy ,\n  long_passing ,\n  ball_control ,\n  acceleration ,\n  sprint_speed ,\n  agility ,\n  reactions ,\n  balance ,\n  shot_power ,\n  jumping ,\n  stamina ,\n  strength ,\n  long_shots ,\n  aggression ,\n  interceptions ,\n  positioning ,\n  vision ,\n  penalties ,\n  marking ,\n  standing_tackle ,\n  sliding_tackle ,\n  gk_diving ,\n  gk_handling ,\n  gk_kicking ,\n  gk_positioning ,\n  gk_reflexes ,\n  current_timestamp() as update_time \n FROM socceranalysis.player_attributes;"
+					},
+					"sink": {
+						"type": "SqlDWSink",
+						"preCopyScript": "truncate table [dbo].[Fact_player_attributes]",
+						"writeBehavior": "Insert",
+						"sqlWriterUseTableLock": false,
+						"disableMetricsCollection": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "player_id",
+									"type": "Int32"
+								},
+								"sink": {
+									"name": "player_id",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "datekey",
+									"type": "String"
+								},
+								"sink": {
+									"name": "date_id",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "overall_rating",
+									"type": "String"
+								},
+								"sink": {
+									"name": "overall_rating",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 6,
+									"precision": 18
+								}
+							},
+							{
+								"source": {
+									"name": "potential",
+									"type": "String"
+								},
+								"sink": {
+									"name": "potential",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 6,
+									"precision": 18
+								}
+							},
+							{
+								"source": {
+									"name": "preferred_foot",
+									"type": "String"
+								},
+								"sink": {
+									"name": "preferred_foot",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "attacking_work_rate",
+									"type": "String"
+								},
+								"sink": {
+									"name": "attacking_work_rate",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "defensive_work_rate",
+									"type": "String"
+								},
+								"sink": {
+									"name": "defensive_work_rate",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "crossing",
+									"type": "String"
+								},
+								"sink": {
+									"name": "crossing",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 6,
+									"precision": 18
+								}
+							},
+							{
+								"source": {
+									"name": "finishing",
+									"type": "String"
+								},
+								"sink": {
+									"name": "finishing",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 6,
+									"precision": 18
+								}
+							},
+							{
+								"source": {
+									"name": "heading_accuracy",
+									"type": "String"
+								},
+								"sink": {
+									"name": "heading_accuracy",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 6,
+									"precision": 18
+								}
+							},
+							{
+								"source": {
+									"name": "short_passing",
+									"type": "String"
+								},
+								"sink": {
+									"name": "short_passing",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 6,
+									"precision": 18
+								}
+							},
+							{
+								"source": {
+									"name": "volleys",
+									"type": "String"
+								},
+								"sink": {
+									"name": "volleys",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 6,
+									"precision": 18
+								}
+							},
+							{
+								"source": {
+									"name": "dribbling",
+									"type": "String"
+								},
+								"sink": {
+									"name": "dribbling",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 6,
+									"precision": 18
+								}
+							},
+							{
+								"source": {
+									"name": "curve",
+									"type": "String"
+								},
+								"sink": {
+									"name": "curve",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 6,
+									"precision": 18
+								}
+							},
+							{
+								"source": {
+									"name": "free_kick_accuracy",
+									"type": "String"
+								},
+								"sink": {
+									"name": "free_kick_accuracy",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 6,
+									"precision": 18
+								}
+							},
+							{
+								"source": {
+									"name": "long_passing",
+									"type": "String"
+								},
+								"sink": {
+									"name": "long_passing",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 6,
+									"precision": 18
+								}
+							},
+							{
+								"source": {
+									"name": "ball_control",
+									"type": "String"
+								},
+								"sink": {
+									"name": "ball_control",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 6,
+									"precision": 18
+								}
+							},
+							{
+								"source": {
+									"name": "acceleration",
+									"type": "String"
+								},
+								"sink": {
+									"name": "acceleration",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 6,
+									"precision": 18
+								}
+							},
+							{
+								"source": {
+									"name": "sprint_speed",
+									"type": "String"
+								},
+								"sink": {
+									"name": "sprint_speed",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 6,
+									"precision": 18
+								}
+							},
+							{
+								"source": {
+									"name": "agility",
+									"type": "String"
+								},
+								"sink": {
+									"name": "agility",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 6,
+									"precision": 18
+								}
+							},
+							{
+								"source": {
+									"name": "reactions",
+									"type": "String"
+								},
+								"sink": {
+									"name": "reactions",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 6,
+									"precision": 18
+								}
+							},
+							{
+								"source": {
+									"name": "balance",
+									"type": "String"
+								},
+								"sink": {
+									"name": "balance",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 6,
+									"precision": 18
+								}
+							},
+							{
+								"source": {
+									"name": "shot_power",
+									"type": "String"
+								},
+								"sink": {
+									"name": "shot_power",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 6,
+									"precision": 18
+								}
+							},
+							{
+								"source": {
+									"name": "jumping",
+									"type": "String"
+								},
+								"sink": {
+									"name": "jumping",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 6,
+									"precision": 18
+								}
+							},
+							{
+								"source": {
+									"name": "stamina",
+									"type": "String"
+								},
+								"sink": {
+									"name": "stamina",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 6,
+									"precision": 18
+								}
+							},
+							{
+								"source": {
+									"name": "strength",
+									"type": "String"
+								},
+								"sink": {
+									"name": "strength",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 6,
+									"precision": 18
+								}
+							},
+							{
+								"source": {
+									"name": "long_shots",
+									"type": "String"
+								},
+								"sink": {
+									"name": "long_shots",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 6,
+									"precision": 18
+								}
+							},
+							{
+								"source": {
+									"name": "aggression",
+									"type": "String"
+								},
+								"sink": {
+									"name": "aggression",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 6,
+									"precision": 18
+								}
+							},
+							{
+								"source": {
+									"name": "interceptions",
+									"type": "String"
+								},
+								"sink": {
+									"name": "interceptions",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 6,
+									"precision": 18
+								}
+							},
+							{
+								"source": {
+									"name": "positioning",
+									"type": "String"
+								},
+								"sink": {
+									"name": "positioning",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 6,
+									"precision": 18
+								}
+							},
+							{
+								"source": {
+									"name": "vision",
+									"type": "String"
+								},
+								"sink": {
+									"name": "vision",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 6,
+									"precision": 18
+								}
+							},
+							{
+								"source": {
+									"name": "penalties",
+									"type": "String"
+								},
+								"sink": {
+									"name": "penalties",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 6,
+									"precision": 18
+								}
+							},
+							{
+								"source": {
+									"name": "marking",
+									"type": "String"
+								},
+								"sink": {
+									"name": "marking",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 6,
+									"precision": 18
+								}
+							},
+							{
+								"source": {
+									"name": "standing_tackle",
+									"type": "String"
+								},
+								"sink": {
+									"name": "standing_tackle",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 6,
+									"precision": 18
+								}
+							},
+							{
+								"source": {
+									"name": "sliding_tackle",
+									"type": "String"
+								},
+								"sink": {
+									"name": "sliding_tackle",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 6,
+									"precision": 18
+								}
+							},
+							{
+								"source": {
+									"name": "gk_diving",
+									"type": "String"
+								},
+								"sink": {
+									"name": "gk_diving",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 6,
+									"precision": 18
+								}
+							},
+							{
+								"source": {
+									"name": "gk_handling",
+									"type": "String"
+								},
+								"sink": {
+									"name": "gk_handling",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 6,
+									"precision": 18
+								}
+							},
+							{
+								"source": {
+									"name": "gk_kicking",
+									"type": "String"
+								},
+								"sink": {
+									"name": "gk_kicking",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 6,
+									"precision": 18
+								}
+							},
+							{
+								"source": {
+									"name": "gk_positioning",
+									"type": "String"
+								},
+								"sink": {
+									"name": "gk_positioning",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 6,
+									"precision": 18
+								}
+							},
+							{
+								"source": {
+									"name": "gk_reflexes",
+									"type": "String"
+								},
+								"sink": {
+									"name": "gk_reflexes",
+									"type": "Decimal",
+									"physicalType": "decimal",
+									"scale": 6,
+									"precision": 18
+								}
+							},
+							{
+								"source": {
+									"name": "update_time",
+									"type": "DateTime"
+								},
+								"sink": {
+									"name": "meta_update_date",
+									"type": "DateTime",
+									"physicalType": "datetime"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "MySqlTable1",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "AzureSynapseAnalyticsTable1",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"annotations": []
+	}
+}

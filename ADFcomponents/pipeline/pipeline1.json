@@ -3,7 +3,7 @@
 	"properties": {
 		"activities": [
 			{
-				"name": "Stage Team data",
+				"name": "Load_DimTeam",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {

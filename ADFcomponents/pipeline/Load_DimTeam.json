@@ -1,14 +1,14 @@
 {
-	"name": "LoadPlayerDataIntoDW",
+	"name": "Load_DimTeam",
 	"properties": {
 		"activities": [
 			{
-				"name": "PlayerDataFromCosmosDBToDW",
+				"name": "Load_DimTeam",
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
 					"timeout": "0.12:00:00",
-					"retry": 0,
+					"retry": 1,
 					"retryIntervalInSeconds": 30,
 					"secureOutput": false,
 					"secureInput": false
@@ -16,15 +16,15 @@
 				"userProperties": [],
 				"typeProperties": {
 					"source": {
-						"type": "CosmosDbMongoDbApiSource",
-						"batchSize": 100
+						"type": "MySqlSource",
+						"query": "SELECT team_id,team_long_name,team_short_name,current_timestamp() as update_time FROM socceranalysis.team;"
 					},
 					"sink": {
 						"type": "SqlDWSink",
 						"writeBehavior": "Upsert",
 						"upsertSettings": {
 							"keys": [
-								"player_id"
+								"team_id"
 							],
 							"interimSchemaName": ""
 						},
@@ -36,63 +36,65 @@
 						"mappings": [
 							{
 								"source": {
-									"path": "$['name']"
-								},
-								"sink": {
-									"name": "player_name",
-									"type": "String"
-								}
-							},
-							{
-								"source": {
-									"path": "$['dob']"
-								},
-								"sink": {
-									"name": "birthday",
-									"type": "DateTime"
-								}
-							},
-							{
-								"source": {
-									"path": "$['height']"
-								},
-								"sink": {
-									"name": "height",
-									"type": "Decimal"
-								}
-							},
-							{
-								"source": {
-									"path": "$['weight']"
-								},
-								"sink": {
-									"name": "weight",
-									"type": "Decimal"
-								}
-							},
-							{
-								"source": {
-									"path": "$['player_id']"
-								},
-								"sink": {
-									"name": "player_id",
+									"name": "team_id",
 									"type": "Int32"
+								},
+								"sink": {
+									"name": "team_id",
+									"type": "Int32",
+									"physicalType": "int"
+								}
+							},
+							{
+								"source": {
+									"name": "team_long_name",
+									"type": "String"
+								},
+								"sink": {
+									"name": "team_long_name",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "team_short_name",
+									"type": "String"
+								},
+								"sink": {
+									"name": "team_short_name",
+									"type": "String",
+									"physicalType": "nvarchar"
+								}
+							},
+							{
+								"source": {
+									"name": "update_time",
+									"type": "DateTime"
+								},
+								"sink": {
+									"name": "meta_update_date",
+									"type": "DateTime",
+									"physicalType": "datetime"
 								}
 							}
 						],
-						"collectionReference": "",
-						"mapComplexValuesToString": false
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
 					}
 				},
 				"inputs": [
 					{
-						"referenceName": "CosmosDbMongoDbCollection1",
+						"referenceName": "MySqlTable1",
 						"type": "DatasetReference"
 					}
 				],
 				"outputs": [
 					{
-						"referenceName": "AzureSynapseAnalyticsTable1",
+						"referenceName": "DimTeam",
 						"type": "DatasetReference"
 					}
 				]

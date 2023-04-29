@@ -1,0 +1,107 @@
+{
+	"name": "Load_DimLeague",
+	"properties": {
+		"activities": [
+			{
+				"name": "PlayerDataFromCosmosDBToDW",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "0.12:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "SqlDWSource",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "SqlDWSink",
+						"writeBehavior": "Upsert",
+						"upsertSettings": {
+							"keys": [
+								"player_id"
+							],
+							"interimSchemaName": ""
+						},
+						"sqlWriterUseTableLock": false
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"path": "$['name']"
+								},
+								"sink": {
+									"name": "player_name",
+									"type": "String"
+								}
+							},
+							{
+								"source": {
+									"path": "$['dob']"
+								},
+								"sink": {
+									"name": "birthday",
+									"type": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"path": "$['height']"
+								},
+								"sink": {
+									"name": "height",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"path": "$['weight']"
+								},
+								"sink": {
+									"name": "weight",
+									"type": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"path": "$['player_id']"
+								},
+								"sink": {
+									"name": "player_id",
+									"type": "Int32"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "DimLeague",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "DimPlayer",
+						"type": "DatasetReference"
+					}
+				]
+			}
+		],
+		"annotations": []
+	}
+}

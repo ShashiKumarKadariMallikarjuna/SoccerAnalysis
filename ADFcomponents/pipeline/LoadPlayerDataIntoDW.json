@@ -92,7 +92,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "AzureSynapseAnalyticsTable1",
+						"referenceName": "DimPlayer",
 						"type": "DatasetReference"
 					}
 				]

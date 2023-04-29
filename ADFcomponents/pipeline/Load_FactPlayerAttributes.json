@@ -567,7 +567,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "AzureSynapseAnalyticsTable1",
+						"referenceName": "FactPlayerAttributes",
 						"type": "DatasetReference"
 					}
 				]

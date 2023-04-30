@@ -17,6 +17,15 @@
 				"typeProperties": {
 					"source": {
 						"type": "CosmosDbMongoDbApiSource",
+						"additionalColumns": [
+							{
+								"name": "meta_update_date",
+								"value": {
+									"value": "@utcNow()",
+									"type": "Expression"
+								}
+							}
+						],
 						"batchSize": 100
 					},
 					"sink": {
@@ -34,6 +43,15 @@
 					"translator": {
 						"type": "TabularTranslator",
 						"mappings": [
+							{
+								"source": {
+									"path": "$['id']"
+								},
+								"sink": {
+									"name": "id",
+									"type": "Int32"
+								}
+							},
 							{
 								"source": {
 									"path": "$['name']"
@@ -77,6 +95,15 @@
 								"sink": {
 									"name": "player_id",
 									"type": "Int32"
+								}
+							},
+							{
+								"source": {
+									"path": "$['meta_update_date']"
+								},
+								"sink": {
+									"name": "meta_update_date",
+									"type": "DateTime"
 								}
 							}
 						],

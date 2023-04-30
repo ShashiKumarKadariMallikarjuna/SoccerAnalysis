@@ -11,6 +11,14 @@
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'AzureBlobStorage1'"
 		},
+		"AzureSynapseAnalytics1_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureSynapseAnalytics1'"
+		},
+		"AzureSynapseAnalytics2_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'AzureSynapseAnalytics2'"
+		},
 		"CosmosDbMongoDb_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'CosmosDbMongoDb'"
@@ -18,6 +26,10 @@
 		"CosmosDbMongoDb1_connectionString": {
 			"type": "secureString",
 			"metadata": "Secure string for 'connectionString' of 'CosmosDbMongoDb1'"
+		},
+		"MySQL_connectionString": {
+			"type": "secureString",
+			"metadata": "Secure string for 'connectionString' of 'MySQL'"
 		},
 		"CosmosDbMongoDb_properties_typeProperties_database": {
 			"type": "string",
@@ -41,6 +53,32 @@
 				"type": "AzureBlobStorage",
 				"typeProperties": {
 					"connectionString": "[parameters('AzureBlobStorage1_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSynapseAnalytics1')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDW",
+				"typeProperties": {
+					"connectionString": "[parameters('AzureSynapseAnalytics1_connectionString')]"
+				}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/AzureSynapseAnalytics2')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "AzureSqlDW",
+				"typeProperties": {
+					"connectionString": "[parameters('AzureSynapseAnalytics2_connectionString')]"
 				}
 			},
 			"dependsOn": []
@@ -76,6 +114,36 @@
 			"dependsOn": []
 		},
 		{
+			"name": "[concat(parameters('factoryName'), '/On-prem')]",
+			"type": "Microsoft.DataFactory/factories/integrationRuntimes",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"type": "SelfHosted",
+				"typeProperties": {}
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/CosmosDbMongoDbCollection1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "CosmosDbMongoDb",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "CosmosDbMongoDbApiCollection",
+				"schema": [],
+				"typeProperties": {
+					"collection": "playerData"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/CosmosDbMongoDb')]"
+			]
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/DestinationDataset_04b')]",
 			"type": "Microsoft.DataFactory/factories/datasets",
 			"apiVersion": "2018-06-01",
@@ -93,6 +161,545 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/CosmosDbMongoDb1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DimLeague')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSynapseAnalytics1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlDWTable",
+				"schema": [
+					{
+						"name": "id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "league_id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "country_name",
+						"type": "nvarchar"
+					},
+					{
+						"name": "league_name",
+						"type": "nvarchar"
+					},
+					{
+						"name": "meta_update_date",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "DimLeague"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSynapseAnalytics1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DimPlayer')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSynapseAnalytics1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlDWTable",
+				"schema": [
+					{
+						"name": "id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "player_id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "player_name",
+						"type": "nvarchar"
+					},
+					{
+						"name": "birthday",
+						"type": "date"
+					},
+					{
+						"name": "height",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 6
+					},
+					{
+						"name": "weight",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 6
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "DimPlayer"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSynapseAnalytics1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/DimTeam')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSynapseAnalytics1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlDWTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "DimTeam"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSynapseAnalytics1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/FactMatch')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSynapseAnalytics1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlDWTable",
+				"schema": [],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "Fact_match"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSynapseAnalytics1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/FactPlayerAttributes')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSynapseAnalytics1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlDWTable",
+				"schema": [
+					{
+						"name": "id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "player_id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "date_id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "overall_rating",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 6
+					},
+					{
+						"name": "potential",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 6
+					},
+					{
+						"name": "preferred_foot",
+						"type": "nvarchar"
+					},
+					{
+						"name": "attacking_work_rate",
+						"type": "nvarchar"
+					},
+					{
+						"name": "defensive_work_rate",
+						"type": "nvarchar"
+					},
+					{
+						"name": "crossing",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 6
+					},
+					{
+						"name": "finishing",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 6
+					},
+					{
+						"name": "heading_accuracy",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 6
+					},
+					{
+						"name": "short_passing",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 6
+					},
+					{
+						"name": "volleys",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 6
+					},
+					{
+						"name": "dribbling",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 6
+					},
+					{
+						"name": "curve",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 6
+					},
+					{
+						"name": "free_kick_accuracy",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 6
+					},
+					{
+						"name": "long_passing",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 6
+					},
+					{
+						"name": "ball_control",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 6
+					},
+					{
+						"name": "acceleration",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 6
+					},
+					{
+						"name": "sprint_speed",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 6
+					},
+					{
+						"name": "agility",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 6
+					},
+					{
+						"name": "reactions",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 6
+					},
+					{
+						"name": "balance",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 6
+					},
+					{
+						"name": "shot_power",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 6
+					},
+					{
+						"name": "jumping",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 6
+					},
+					{
+						"name": "stamina",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 6
+					},
+					{
+						"name": "strength",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 6
+					},
+					{
+						"name": "long_shots",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 6
+					},
+					{
+						"name": "aggression",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 6
+					},
+					{
+						"name": "interceptions",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 6
+					},
+					{
+						"name": "positioning",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 6
+					},
+					{
+						"name": "vision",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 6
+					},
+					{
+						"name": "penalties",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 6
+					},
+					{
+						"name": "marking",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 6
+					},
+					{
+						"name": "standing_tackle",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 6
+					},
+					{
+						"name": "sliding_tackle",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 6
+					},
+					{
+						"name": "gk_diving",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 6
+					},
+					{
+						"name": "gk_handling",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 6
+					},
+					{
+						"name": "gk_kicking",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 6
+					},
+					{
+						"name": "gk_positioning",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 6
+					},
+					{
+						"name": "gk_reflexes",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 6
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "Fact_player_attributes"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSynapseAnalytics1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/FactTeamAttributes')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "AzureSynapseAnalytics1",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "AzureSqlDWTable",
+				"schema": [
+					{
+						"name": "team_id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "date_id",
+						"type": "int",
+						"precision": 10
+					},
+					{
+						"name": "buildUpPlaySpeed",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 6
+					},
+					{
+						"name": "buildUpPlaySpeedClass",
+						"type": "nvarchar"
+					},
+					{
+						"name": "buildUpPlayDribbling",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 6
+					},
+					{
+						"name": "buildUpPlayDribblingClass",
+						"type": "nvarchar"
+					},
+					{
+						"name": "buildUpPlayPassing",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 6
+					},
+					{
+						"name": "buildUpPlayPassingClass",
+						"type": "nvarchar"
+					},
+					{
+						"name": "buildUpPlayPositioningClass",
+						"type": "nvarchar"
+					},
+					{
+						"name": "chanceCreationPassing",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 6
+					},
+					{
+						"name": "chanceCreationPassingClass",
+						"type": "nvarchar"
+					},
+					{
+						"name": "chanceCreationCrossing",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 6
+					},
+					{
+						"name": "chanceCreationCrossingClass",
+						"type": "nvarchar"
+					},
+					{
+						"name": "chanceCreationShooting",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 6
+					},
+					{
+						"name": "chanceCreationShootingClass",
+						"type": "nvarchar"
+					},
+					{
+						"name": "chanceCreationPositioningClass",
+						"type": "nvarchar"
+					},
+					{
+						"name": "defencePressure",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 6
+					},
+					{
+						"name": "defencePressureClass",
+						"type": "nvarchar"
+					},
+					{
+						"name": "defenceAggression",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 6
+					},
+					{
+						"name": "defenceAggressionClass",
+						"type": "nvarchar"
+					},
+					{
+						"name": "defenceTeamWidth",
+						"type": "decimal",
+						"precision": 18,
+						"scale": 6
+					},
+					{
+						"name": "defenceTeamWidthClass",
+						"type": "nvarchar"
+					},
+					{
+						"name": "defenceDefenderLineClass",
+						"type": "nvarchar"
+					},
+					{
+						"name": "meta_update_date",
+						"type": "datetime",
+						"precision": 23,
+						"scale": 3
+					}
+				],
+				"typeProperties": {
+					"schema": "dbo",
+					"table": "Fact_team_attributes"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/AzureSynapseAnalytics1')]"
 			]
 		},
 		{
@@ -150,6 +757,167 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/linkedServices/AzureBlobStorage1')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MySQL')]",
+			"type": "Microsoft.DataFactory/factories/linkedServices",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"annotations": [],
+				"type": "MySql",
+				"typeProperties": {
+					"connectionString": "[parameters('MySQL_connectionString')]"
+				},
+				"connectVia": {
+					"referenceName": "On-prem",
+					"type": "IntegrationRuntimeReference"
+				}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/integrationRuntimes/On-prem')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Load_DimPlayer')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "PlayerDataFromCosmosDBToDW",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.00:05:00",
+							"retry": 1,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "CosmosDbMongoDbApiSource",
+								"additionalColumns": [
+									{
+										"name": "meta_update_date",
+										"value": {
+											"value": "@utcNow()",
+											"type": "Expression"
+										}
+									}
+								],
+								"batchSize": 100
+							},
+							"sink": {
+								"type": "SqlDWSink",
+								"writeBehavior": "Upsert",
+								"upsertSettings": {
+									"keys": [
+										"player_id"
+									],
+									"interimSchemaName": ""
+								},
+								"sqlWriterUseTableLock": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"path": "$['id']"
+										},
+										"sink": {
+											"name": "id",
+											"type": "Int32"
+										}
+									},
+									{
+										"source": {
+											"path": "$['name']"
+										},
+										"sink": {
+											"name": "player_name",
+											"type": "String"
+										}
+									},
+									{
+										"source": {
+											"path": "$['dob']"
+										},
+										"sink": {
+											"name": "birthday",
+											"type": "DateTime"
+										}
+									},
+									{
+										"source": {
+											"path": "$['height']"
+										},
+										"sink": {
+											"name": "height",
+											"type": "Decimal"
+										}
+									},
+									{
+										"source": {
+											"path": "$['weight']"
+										},
+										"sink": {
+											"name": "weight",
+											"type": "Decimal"
+										}
+									},
+									{
+										"source": {
+											"path": "$['player_id']"
+										},
+										"sink": {
+											"name": "player_id",
+											"type": "Int32"
+										}
+									},
+									{
+										"source": {
+											"path": "$['meta_update_date']"
+										},
+										"sink": {
+											"name": "meta_update_date",
+											"type": "DateTime"
+										}
+									}
+								],
+								"collectionReference": "",
+								"mapComplexValuesToString": false
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "CosmosDbMongoDbCollection1",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DimPlayer",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/CosmosDbMongoDbCollection1')]",
+				"[concat(variables('factoryId'), '/datasets/DimPlayer')]"
 			]
 		},
 		{
@@ -287,6 +1055,141 @@
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/datasets/SourceDataset_04b')]",
 				"[concat(variables('factoryId'), '/datasets/DestinationDataset_04b')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/MySqlTable1')]",
+			"type": "Microsoft.DataFactory/factories/datasets",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"linkedServiceName": {
+					"referenceName": "MySQL",
+					"type": "LinkedServiceReference"
+				},
+				"annotations": [],
+				"type": "MySqlTable",
+				"schema": [],
+				"typeProperties": {}
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/linkedServices/MySQL')]"
+			]
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Load_DimLeague')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Load_DimLeague",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.00:05:00",
+							"retry": 1,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "MySqlSource",
+								"query": "SELECT league_id,league.name as leagueName, country.name as CountryName,current_timestamp() as update_time  FROM socceranalysis.league\ninner join socceranalysis.country\non league.country_id=country.country_id;"
+							},
+							"sink": {
+								"type": "SqlDWSink",
+								"writeBehavior": "Upsert",
+								"upsertSettings": {
+									"keys": [
+										"league_id"
+									],
+									"interimSchemaName": ""
+								},
+								"sqlWriterUseTableLock": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "league_id",
+											"type": "Int32"
+										},
+										"sink": {
+											"name": "league_id",
+											"type": "Int32",
+											"physicalType": "int"
+										}
+									},
+									{
+										"source": {
+											"name": "CountryName",
+											"type": "String"
+										},
+										"sink": {
+											"name": "country_name",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "leagueName",
+											"type": "String"
+										},
+										"sink": {
+											"name": "league_name",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "update_time",
+											"type": "DateTime"
+										},
+										"sink": {
+											"name": "meta_update_date",
+											"type": "DateTime",
+											"physicalType": "datetime"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "MySqlTable1",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DimLeague",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": [
+				"[concat(variables('factoryId'), '/datasets/MySqlTable1')]",
+				"[concat(variables('factoryId'), '/datasets/DimLeague')]"
 			]
 		}
 	]

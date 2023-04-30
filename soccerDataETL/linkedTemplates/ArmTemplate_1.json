@@ -13,6 +13,120 @@
 	},
 	"resources": [
 		{
+			"name": "[concat(parameters('factoryName'), '/Load_DimLeague')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Load_DimLeague",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.00:05:00",
+							"retry": 1,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "MySqlSource",
+								"query": "SELECT league_id,league.name as leagueName, country.name as CountryName,current_timestamp() as update_time  FROM socceranalysis.league\ninner join socceranalysis.country\non league.country_id=country.country_id;"
+							},
+							"sink": {
+								"type": "SqlDWSink",
+								"writeBehavior": "Upsert",
+								"upsertSettings": {
+									"keys": [
+										"league_id"
+									],
+									"interimSchemaName": ""
+								},
+								"sqlWriterUseTableLock": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "league_id",
+											"type": "Int32"
+										},
+										"sink": {
+											"name": "league_id",
+											"type": "Int32",
+											"physicalType": "int"
+										}
+									},
+									{
+										"source": {
+											"name": "CountryName",
+											"type": "String"
+										},
+										"sink": {
+											"name": "country_name",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "leagueName",
+											"type": "String"
+										},
+										"sink": {
+											"name": "league_name",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "update_time",
+											"type": "DateTime"
+										},
+										"sink": {
+											"name": "meta_update_date",
+											"type": "DateTime",
+											"physicalType": "datetime"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "MySqlTable1",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "DimLeague",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
 			"name": "[concat(parameters('factoryName'), '/Load_DimTeam')]",
 			"type": "Microsoft.DataFactory/factories/pipelines",
 			"apiVersion": "2018-06-01",
@@ -1008,6 +1122,144 @@
 						"outputs": [
 							{
 								"referenceName": "FactMatch",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						]
+					}
+				],
+				"policy": {
+					"elapsedTimeMetric": {},
+					"cancelAfter": {}
+				},
+				"annotations": []
+			},
+			"dependsOn": []
+		},
+		{
+			"name": "[concat(parameters('factoryName'), '/Load_FactMatch_Extention')]",
+			"type": "Microsoft.DataFactory/factories/pipelines",
+			"apiVersion": "2018-06-01",
+			"properties": {
+				"activities": [
+					{
+						"name": "Load_FactMatchExtention",
+						"type": "Copy",
+						"dependsOn": [],
+						"policy": {
+							"timeout": "0.00:10:00",
+							"retry": 1,
+							"retryIntervalInSeconds": 30,
+							"secureOutput": false,
+							"secureInput": false
+						},
+						"userProperties": [],
+						"typeProperties": {
+							"source": {
+								"type": "MySqlSource",
+								"query": "SELECT match_api_id as match_id\n, case when goals='None' then NULL else cast(goals as decimal(18,6)) end goals\n,case when shoton='None' then NULL else cast(shoton as decimal(18,6)) end shoton\n,case when penalties='None' then NULL else cast(penalties as decimal(18,6)) end penalties\n,subtype\n,current_timestamp() as update_time  FROM socceranalysis.match_attributes;\n"
+							},
+							"sink": {
+								"type": "SqlDWSink",
+								"preCopyScript": "truncate table [dbo].[Fact_match_ext]",
+								"writeBehavior": "Insert",
+								"sqlWriterUseTableLock": false,
+								"disableMetricsCollection": false
+							},
+							"enableStaging": false,
+							"translator": {
+								"type": "TabularTranslator",
+								"mappings": [
+									{
+										"source": {
+											"name": "match_id",
+											"type": "Int32"
+										},
+										"sink": {
+											"name": "match_id",
+											"type": "Int32",
+											"physicalType": "int"
+										}
+									},
+									{
+										"source": {
+											"name": "goals",
+											"type": "Decimal"
+										},
+										"sink": {
+											"name": "goals",
+											"type": "Decimal",
+											"physicalType": "decimal",
+											"scale": 6,
+											"precision": 18
+										}
+									},
+									{
+										"source": {
+											"name": "shoton",
+											"type": "Decimal"
+										},
+										"sink": {
+											"name": "shoton",
+											"type": "Decimal",
+											"physicalType": "decimal",
+											"scale": 6,
+											"precision": 18
+										}
+									},
+									{
+										"source": {
+											"name": "penalties",
+											"type": "Decimal"
+										},
+										"sink": {
+											"name": "penalties",
+											"type": "Decimal",
+											"physicalType": "decimal",
+											"scale": 6,
+											"precision": 18
+										}
+									},
+									{
+										"source": {
+											"name": "subtype",
+											"type": "String"
+										},
+										"sink": {
+											"name": "subtype",
+											"type": "String",
+											"physicalType": "nvarchar"
+										}
+									},
+									{
+										"source": {
+											"name": "update_time",
+											"type": "DateTime"
+										},
+										"sink": {
+											"name": "meta_update_date",
+											"type": "DateTime",
+											"physicalType": "datetime"
+										}
+									}
+								],
+								"typeConversion": true,
+								"typeConversionSettings": {
+									"allowDataTruncation": true,
+									"treatBooleanAsNumber": false
+								}
+							}
+						},
+						"inputs": [
+							{
+								"referenceName": "MySqlTable1",
+								"type": "DatasetReference",
+								"parameters": {}
+							}
+						],
+						"outputs": [
+							{
+								"referenceName": "AzureSynapseAnalyticsTable1",
 								"type": "DatasetReference",
 								"parameters": {}
 							}
@@ -2079,6 +2331,27 @@
 							"waitOnCompletion": true,
 							"parameters": {}
 						}
+					},
+					{
+						"name": "Fact_Match_Ext",
+						"type": "ExecutePipeline",
+						"dependsOn": [
+							{
+								"activity": "Load_FactMatch",
+								"dependencyConditions": [
+									"Succeeded"
+								]
+							}
+						],
+						"userProperties": [],
+						"typeProperties": {
+							"pipeline": {
+								"referenceName": "Load_FactMatch_Extention",
+								"type": "PipelineReference"
+							},
+							"waitOnCompletion": true,
+							"parameters": {}
+						}
 					}
 				],
 				"policy": {
@@ -2089,9 +2362,11 @@
 			},
 			"dependsOn": [
 				"[concat(variables('factoryId'), '/pipelines/Load_DimTeam')]",
+				"[concat(variables('factoryId'), '/pipelines/Load_DimLeague')]",
 				"[concat(variables('factoryId'), '/pipelines/Load_FactMatch')]",
 				"[concat(variables('factoryId'), '/pipelines/Load_FactPlayerAttributes')]",
-				"[concat(variables('factoryId'), '/pipelines/Load_FactTeamAttributes')]"
+				"[concat(variables('factoryId'), '/pipelines/Load_FactTeamAttributes')]",
+				"[concat(variables('factoryId'), '/pipelines/Load_FactMatch_Extention')]"
 			]
 		},
 		{

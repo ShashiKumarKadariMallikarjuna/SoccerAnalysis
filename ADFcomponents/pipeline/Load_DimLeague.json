@@ -7,7 +7,7 @@
 				"type": "Copy",
 				"dependsOn": [],
 				"policy": {
-					"timeout": "0.12:00:00",
+					"timeout": "0.00:05:00",
 					"retry": 1,
 					"retryIntervalInSeconds": 30,
 					"secureOutput": false,
@@ -17,14 +17,14 @@
 				"typeProperties": {
 					"source": {
 						"type": "MySqlSource",
-						"query": "SELECT team_id,team_long_name,team_short_name,current_timestamp() as update_time FROM socceranalysis.team;"
+						"query": "SELECT league_id,league.name as leagueName, country.name as CountryName,current_timestamp() as update_time  FROM socceranalysis.league\ninner join socceranalysis.country\non league.country_id=country.country_id;"
 					},
 					"sink": {
 						"type": "SqlDWSink",
 						"writeBehavior": "Upsert",
 						"upsertSettings": {
 							"keys": [
-								"team_id"
+								"league_id"
 							],
 							"interimSchemaName": ""
 						},
@@ -36,33 +36,33 @@
 						"mappings": [
 							{
 								"source": {
-									"name": "team_id",
+									"name": "league_id",
 									"type": "Int32"
 								},
 								"sink": {
-									"name": "team_id",
+									"name": "league_id",
 									"type": "Int32",
 									"physicalType": "int"
 								}
 							},
 							{
 								"source": {
-									"name": "team_long_name",
+									"name": "CountryName",
 									"type": "String"
 								},
 								"sink": {
-									"name": "team_long_name",
+									"name": "country_name",
 									"type": "String",
 									"physicalType": "nvarchar"
 								}
 							},
 							{
 								"source": {
-									"name": "team_short_name",
+									"name": "leagueName",
 									"type": "String"
 								},
 								"sink": {
-									"name": "team_short_name",
+									"name": "league_name",
 									"type": "String",
 									"physicalType": "nvarchar"
 								}
@@ -94,7 +94,7 @@
 				],
 				"outputs": [
 					{
-						"referenceName": "DimTeam",
+						"referenceName": "DimLeague",
 						"type": "DatasetReference"
 					}
 				]

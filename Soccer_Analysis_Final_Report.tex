@@ -11,6 +11,7 @@
 \usepackage{graphicx}
 \usepackage{cite}
 \usepackage{pdfpages}
+\usepackage{fancyhdr}
 
 \begin{document}
 
@@ -436,11 +437,11 @@ Khasawneh, T. N., AL-Sahlee, M. H., & Safia, A. A. (2020, April). Sql, newsql, a
 \end{figure}
 
 \clearpage
-\clearpage
+\newpage
 
 \section{\textbf{Appendix}}
-\includepdf[pages=1]{Untitled document.pdf}
-\includepdf[pages=2-3]{Untitled document.pdf}
+\includepdf[pages=1,pagecommand={\pagestyle{plain}\fancyhf{}\rhead{\thepage}}]{Untitled document.pdf}
+\includepdf[pages=2-3,pagecommand={\pagestyle{plain}\fancyhf{}\rhead{\thepage}}]{Untitled document.pdf}
 
 \end{document}
 
